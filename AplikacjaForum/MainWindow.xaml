@@ -1,0 +1,21 @@
+﻿<Window x:Class="AplikacjaKlient.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AplikacjaKlient"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="431" Width="804" MinWidth="500" MinHeight="500" Closing="DataWindow_Closing">
+
+	<!--
+	<Window.Resources>
+		<DataTemplate DataType="{x:Type local:Start}">
+			<Label Content="dasdad"/>
+		</DataTemplate>
+	</Window.Resources>
+-->
+	<ContentPresenter Content="{Binding}"/>
+
+
+
+</Window>
