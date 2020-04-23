@@ -11,16 +11,21 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace AplikacjaKlient
+namespace AplikacjaKlient.Zalogowany
 {
 	/// <summary>
-	/// Interaction logic for Zalogowany.xaml
+	/// Interaction logic for Lista.xaml
 	/// </summary>
-	public partial class Zalogowany : UserControl
+	public partial class Lista : UserControl
 	{
-		public Zalogowany()
+		public Lista()
 		{
 			InitializeComponent();
+			List<WatekTytulElement> watekTytuls = new List<WatekTytulElement>();
+			watekTytuls.Add(new WatekTytulElement());
+			watekTytuls.Add(new WatekTytulElement());
+			watekTytuls.Add(new WatekTytulElement());
+			lista.ItemsSource = watekTytuls;
 		}
 	}
 }

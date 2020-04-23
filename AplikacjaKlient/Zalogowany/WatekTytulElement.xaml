@@ -1,0 +1,23 @@
+﻿<UserControl x:Class="AplikacjaKlient.Zalogowany.WatekTytulElement"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:AplikacjaKlient.Zalogowany"
+             mc:Ignorable="d" d:DesignWidth="800" Height="90">
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="75*"/>
+			<ColumnDefinition Width="25*"/>
+		</Grid.ColumnDefinitions>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="60*"/>
+			<RowDefinition Height="40*"/>
+		</Grid.RowDefinitions>
+		<Label Name="LabelTytul" Content="Label" VerticalAlignment="Center"/>
+		<Label Name="LabelAutor" Content="Label" HorizontalAlignment="Left"  Grid.Row="1" VerticalAlignment="Bottom"/>
+		<CheckBox Name="CheckBoxObserwuj" Content="Obserwuj" Grid.Column="1" Grid.RowSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+
+	</Grid>
+</UserControl>

@@ -6,6 +6,11 @@
         xmlns:local="clr-namespace:AplikacjaKlient"
         mc:Ignorable="d"
         Title="MainWindow" Height="431" Width="804" MinWidth="500" MinHeight="500" Closing="DataWindow_Closing">
+	<Window.Style>
+		<Style TargetType="Window">
+			<Setter Property="FontSize" Value="17" />
+		</Style>
+	</Window.Style>
 
 	<!--
 	<Window.Resources>
@@ -14,7 +19,7 @@
 		</DataTemplate>
 	</Window.Resources>
 -->
-	<ContentPresenter Content="{Binding}"/>
+	<ContentPresenter x:Name="contentPresenter" Content="{Binding}"/>
 
 
 

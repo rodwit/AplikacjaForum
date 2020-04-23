@@ -44,10 +44,10 @@ namespace AplikacjaKlient
 					_aktualnyWidok = new Start(this);
 					break;
 				case WIDOK.LOGOWANIE:
-					//_aktualnyWidok = new Logowanie(this);
-					//break;
+					_aktualnyWidok = new Logowanie(this);
+					break;
 				case WIDOK.ZALOGOWANY:
-					_aktualnyWidok = new Zalogowany();
+					//_aktualnyWidok = new Zalogowany.Glowny();
 					break;
 				case WIDOK.REJESTRACJA:
 					_aktualnyWidok = new Rejestracja(this);
@@ -56,7 +56,8 @@ namespace AplikacjaKlient
 					_aktualnyWidok = new Start(this);
 					break;
 			}
-			this.DataContext = _aktualnyWidok;
+			this.contentPresenter.Content = _aktualnyWidok;
+			//this.DataContext = _aktualnyWidok;
 		}
 	}
 }

@@ -11,10 +11,11 @@ namespace AplikacjaSerwer
 {
 	class Polaczenie
 	{
+		bool _zalogowany = false;
 		TcpClient _klient = null;
 		TcpAdapter _tcpAdapter = null;
 
-		private bool aktywny = true;
+		bool aktywny = true;
 
 		Thread _licznikThread = null;
 		Licznik _licznik = null;
@@ -150,6 +151,11 @@ namespace AplikacjaSerwer
 				_tcpAdapter.WyslijKomende(Komendy.NIE_POTWIERDZENIE);
 				return;
 			}
+
+		}
+
+		void lista()
+		{
 
 		}
 	}
