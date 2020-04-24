@@ -11,6 +11,7 @@ namespace AplikacjaKlient
 	public sealed class Klient
 	{
 		private static Klient _instancja = null;
+		private string _login = null;
 		TcpClient _klient = null;
 		TcpAdapter _tcpAdapter = null;
 
@@ -49,10 +50,13 @@ namespace AplikacjaKlient
 			_licznikThread.Start();
 		}
 
+		public string Login { get => _login; }
+
 		public void Stop()
 		{
 			_licznik.Wylacz();
 			_klient.Close();
+			_login = null;
 		}
 
 		~Klient()
@@ -123,7 +127,12 @@ namespace AplikacjaKlient
 			_tcpAdapter.WyslijDane(Encoding.UTF8.GetBytes(login));
 			_tcpAdapter.WyslijDane(Encoding.UTF8.GetBytes(haslo));
 
-			return (_tcpAdapter.OdbierzKomende() == Komendy.POTWIERDZENIE) ? true : false;
+			if(_tcpAdapter.OdbierzKomende() == Komendy.POTWIERDZENIE)
+			{
+				_login = login;
+				return true;
+			}
+			return false;
 		}
 
 		public Watek[] Tematy()

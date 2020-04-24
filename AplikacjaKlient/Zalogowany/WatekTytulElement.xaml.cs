@@ -20,6 +20,13 @@ namespace AplikacjaKlient.Zalogowany
 	public partial class WatekTytulElement : UserControl
 	{
 		private uint _id;
+
+		string _tytulProperty;
+		string _autorProperty;
+
+
+
+
 		public WatekTytulElement()
 		{
 			InitializeComponent();
@@ -28,9 +35,12 @@ namespace AplikacjaKlient.Zalogowany
 
 		public WatekTytulElement(Watek watek) : this()
 		{
+			_tytulProperty = "Tytuł :"+watek.ZwrocNazwe;
+			_autorProperty = "Autor: "+watek.ZwrocAutora;
 			_id = watek.ZwrocID;
-			LabelTytul.Content = watek.ZwrocNazwe;
-			LabelAutor.Content = watek.ZwrocAutora;
 		}
+
+		public string TytulProperty { get => _tytulProperty; set => _tytulProperty = value; }
+		public string AutorProperty { get => _autorProperty; set => _autorProperty = value; }
 	}
 }

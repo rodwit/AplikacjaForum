@@ -33,7 +33,9 @@ namespace AplikacjaSerwer
 
 				//testowy 
 				Watek testowy = new Watek(1, "Testowy", "Test");
+				Watek testowy2 = new Watek(2, "Testowy2", "Test2");
 				_watki.Add(testowy);
+				_watki.Add(testowy2);
 			}
 
 		}
