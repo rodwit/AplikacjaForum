@@ -10,6 +10,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using WspolnyInterfejs;
 
 namespace AplikacjaKlient.Zalogowany
 {
@@ -18,9 +19,18 @@ namespace AplikacjaKlient.Zalogowany
 	/// </summary>
 	public partial class WatekTytulElement : UserControl
 	{
+		private uint _id;
 		public WatekTytulElement()
 		{
 			InitializeComponent();
+
+		}
+
+		public WatekTytulElement(Watek watek) : this()
+		{
+			_id = watek.ZwrocID;
+			LabelTytul.Content = watek.ZwrocNazwe;
+			LabelAutor.Content = watek.ZwrocAutora;
 		}
 	}
 }

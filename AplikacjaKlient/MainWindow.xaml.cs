@@ -33,7 +33,7 @@ namespace AplikacjaKlient
 
 		void DataWindow_Closing(object sender, CancelEventArgs e)
 		{
-			Klient.instancja().Stop();
+			Klient.Instancja().Stop();
 		}
 
 		public void przelaczWidok(WIDOK widok)
@@ -47,7 +47,7 @@ namespace AplikacjaKlient
 					_aktualnyWidok = new Logowanie(this);
 					break;
 				case WIDOK.ZALOGOWANY:
-					//_aktualnyWidok = new Zalogowany.Glowny();
+					_aktualnyWidok = new Zalogowany.Glowny();
 					break;
 				case WIDOK.REJESTRACJA:
 					_aktualnyWidok = new Rejestracja(this);

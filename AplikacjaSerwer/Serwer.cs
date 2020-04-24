@@ -16,6 +16,7 @@ namespace AplikacjaSerwer
 		private TcpListener _tcpListener = null;
 		private bool _uruchomiony = false;
 
+
 		private List<Polaczenie> _polaczenia = new List<Polaczenie>();
 
 		public static Serwer instancja()
@@ -32,6 +33,7 @@ namespace AplikacjaSerwer
 			int port = Int32.Parse(konfiguracja.Root.Element("Port").Value);
 
 			_tcpListener = new TcpListener(System.Net.IPAddress.Parse(adres), port);
+
 
 
 		}

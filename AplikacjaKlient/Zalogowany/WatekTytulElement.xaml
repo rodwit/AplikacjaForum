@@ -14,8 +14,8 @@
 			<RowDefinition Height="60*"/>
 			<RowDefinition Height="40*"/>
 		</Grid.RowDefinitions>
-		<Label Name="LabelTytul" Content="Label" VerticalAlignment="Center"/>
-		<Label Name="LabelAutor" Content="Label" HorizontalAlignment="Left"  Grid.Row="1" VerticalAlignment="Bottom"/>
+		<Label Name="LabelTytul"    VerticalAlignment="Center"/>
+		<Label Name="LabelAutor"   HorizontalAlignment="Left"  Grid.Row="1" VerticalAlignment="Bottom"/>
 		<CheckBox Name="CheckBoxObserwuj" Content="Obserwuj" Grid.Column="1" Grid.RowSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
 

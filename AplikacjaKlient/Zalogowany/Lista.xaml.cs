@@ -10,6 +10,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using WspolnyInterfejs;
 
 namespace AplikacjaKlient.Zalogowany
 {
@@ -21,10 +22,15 @@ namespace AplikacjaKlient.Zalogowany
 		public Lista()
 		{
 			InitializeComponent();
+			Watek[] listaWatkow =  Klient.Instancja().Tematy();
 			List<WatekTytulElement> watekTytuls = new List<WatekTytulElement>();
-			watekTytuls.Add(new WatekTytulElement());
-			watekTytuls.Add(new WatekTytulElement());
-			watekTytuls.Add(new WatekTytulElement());
+
+			foreach (var ele in listaWatkow)
+			{
+				WatekTytulElement watekTytulElement = new WatekTytulElement(ele);
+				watekTytuls.Add(watekTytulElement);
+			}
+			
 			lista.ItemsSource = watekTytuls;
 		}
 	}

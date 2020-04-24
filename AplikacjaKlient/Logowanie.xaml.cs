@@ -33,7 +33,10 @@ namespace AplikacjaKlient
 
 		private void buttonOk_Click(object sender, RoutedEventArgs e)
 		{
-			//Klient.instancja().wyslijKomende(WspolnyInterfejs.Komendy.LOGOWANIE);
+			if (!Klient.Instancja().Logowanie(textboxLogin.Text, textboxHaslo.Password))
+				MessageBox.Show("Błędne hasło lub login");
+			else
+				_rodzic.przelaczWidok(MainWindow.WIDOK.ZALOGOWANY);
 		}
 	}
 }

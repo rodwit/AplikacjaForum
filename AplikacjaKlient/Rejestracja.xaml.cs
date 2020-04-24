@@ -32,7 +32,7 @@ namespace AplikacjaKlient
 
 		private void buttonOk_Click(object sender, RoutedEventArgs e)
 		{
-			if (Klient.instancja().Rejestracja(textboxLogin.Text, textboxHaslo.Password))
+			if (Klient.Instancja().Rejestracja(textboxLogin.Text, textboxHaslo.Password))
 				MessageBox.Show("Udana rejestracja");
 			else
 				MessageBox.Show("Taki użytkownik już instnieje");

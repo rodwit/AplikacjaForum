@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Net.Sockets;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace WspolnyInterfejs
 {
@@ -25,11 +26,32 @@ namespace WspolnyInterfejs
 			return dane;
 		}
 
+		public Watek ToWatek(byte[] dane)
+		{
+			BinaryFormatter binaryFormatter = new BinaryFormatter();
+			System.IO.MemoryStream memoryStream = new System.IO.MemoryStream(dane);
+			Watek wynik = (Watek)binaryFormatter.Deserialize(memoryStream);
+
+			return wynik;
+		}
+
 		public void WyslijDane(byte[] dane)
 		{
 			Console.WriteLine("Send data");
 			_networkStream.Write(BitConverter.GetBytes(dane.Length), 0, sizeof(int)); //wyślij rozmiar tablicy byte
 			_networkStream.Write(dane, 0, dane.Length);
+		}
+
+		public void WyslijDane(Watek dane)
+		{
+			if (dane == null)
+				throw new Exception("WyslijDane puste dane");
+			BinaryFormatter binaryFormatter = new BinaryFormatter();
+			System.IO.MemoryStream memoryStream = new System.IO.MemoryStream();
+			binaryFormatter.Serialize(memoryStream, dane);
+
+			WyslijDane(memoryStream.ToArray());
+
 		}
 
 		public void WyslijKomende(WspolnyInterfejs.Komendy komenda)
@@ -52,5 +74,6 @@ namespace WspolnyInterfejs
 		{
 			return _networkStream.DataAvailable;
 		}
+
 	}
 }

@@ -17,6 +17,8 @@ namespace AplikacjaSerwer
 
 		bool aktywny = true;
 
+		private static List<Watek> _watki; // lista tematów rozmów
+
 		Thread _licznikThread = null;
 		Licznik _licznik = null;
 
@@ -24,6 +26,16 @@ namespace AplikacjaSerwer
 		{
 			_klient = klient;
 			_tcpAdapter = new TcpAdapter(_klient);
+
+			if (_watki == null)
+			{
+				_watki = new List<Watek>();
+
+				//testowy 
+				Watek testowy = new Watek(1, "Testowy", "Test");
+				_watki.Add(testowy);
+			}
+
 		}
 
 
@@ -49,13 +61,13 @@ namespace AplikacjaSerwer
 				switch (_tcpAdapter.OdbierzKomende())
 				{
 					case WspolnyInterfejs.Komendy.LOGOWANIE:
-						Console.WriteLine("Logowanie");
+						logowanie();
 						break;
 					case WspolnyInterfejs.Komendy.REJESTRACJA:
 						rejestracja();
 						break;
 					case WspolnyInterfejs.Komendy.LISTA:
-						Console.WriteLine("Lista");
+						lista();
 						break;
 					case WspolnyInterfejs.Komendy.TEMAT:
 						Console.WriteLine("Temat");
@@ -126,6 +138,17 @@ namespace AplikacjaSerwer
 			}
 		}
 
+		/// <summary>
+		/// Zwraca wątek po id. Jak nie to null
+		/// </summary>
+		private Watek zwrocWatek(uint id) 
+		{
+			foreach (var ele in _watki)
+				if (ele.ZwrocID == id)
+					return ele;
+			return null;
+		}
+
 		private void rejestracja()
 		{
 			string login = Encoding.UTF8.GetString(_tcpAdapter.OdbierzDane());
@@ -154,8 +177,39 @@ namespace AplikacjaSerwer
 
 		}
 
+		void logowanie()
+		{
+			string login = Encoding.UTF8.GetString(_tcpAdapter.OdbierzDane());
+			string haslo = Encoding.UTF8.GetString(_tcpAdapter.OdbierzDane());
+
+			XDocument uzytkownicy = XDocument.Load("./uzytkownicy.xml");
+			var temp = uzytkownicy.Root.Element(login);
+
+			if (temp != null)
+				if (temp.Value == haslo)
+				{ _zalogowany = true; }
+
+			if (_zalogowany)
+				_tcpAdapter.WyslijKomende(Komendy.POTWIERDZENIE);
+			else
+				_tcpAdapter.WyslijKomende(Komendy.NIE_POTWIERDZENIE);
+		}
+
 		void lista()
 		{
+			if (_zalogowany == false) //wartownik
+				return;
+
+
+			if (_watki.Count == 0)
+			{
+				_tcpAdapter.WyslijKomende(Komendy.NIE_POTWIERDZENIE); // jak nie ma wątków
+				return;
+			}
+			_tcpAdapter.WyslijKomende(Komendy.POTWIERDZENIE);
+			_tcpAdapter.WyslijDane(BitConverter.GetBytes(_watki.Count)); // wyślij liczbę wątków
+			foreach (var ele in _watki)
+				_tcpAdapter.WyslijDane(ele.ZwrocMniejszy()); // wyślij tematy
 
 		}
 	}

@@ -17,7 +17,7 @@ namespace AplikacjaKlient
 		Thread _licznikThread = null;
 		Licznik _licznik;
 
-		public static Klient instancja()
+		public static Klient Instancja()
 		{
 			if (_instancja == null)
 				_instancja = new Klient();
@@ -52,6 +52,7 @@ namespace AplikacjaKlient
 		public void Stop()
 		{
 			_licznik.Wylacz();
+			_klient.Close();
 		}
 
 		~Klient()
@@ -114,6 +115,36 @@ namespace AplikacjaKlient
 
 			return (_tcpAdapter.OdbierzKomende() == Komendy.POTWIERDZENIE) ? true : false;
 
+		}
+
+		public bool Logowanie(string login, string haslo)
+		{
+			_tcpAdapter.WyslijKomende(Komendy.LOGOWANIE);
+			_tcpAdapter.WyslijDane(Encoding.UTF8.GetBytes(login));
+			_tcpAdapter.WyslijDane(Encoding.UTF8.GetBytes(haslo));
+
+			return (_tcpAdapter.OdbierzKomende() == Komendy.POTWIERDZENIE) ? true : false;
+		}
+
+		public Watek[] Tematy()
+		{
+			_tcpAdapter.WyslijKomende(Komendy.LISTA);
+
+			if(_tcpAdapter.OdbierzKomende() == Komendy.NIE_POTWIERDZENIE)
+			{
+				return null;
+			}
+
+			int ilosc = BitConverter.ToInt32(_tcpAdapter.OdbierzDane());
+			Watek[] tablicaWatkow = new Watek[ilosc];
+
+			for(int i=0; i < ilosc; ++i)
+			{
+				Watek temp = _tcpAdapter.ToWatek(_tcpAdapter.OdbierzDane());
+				tablicaWatkow[i] = temp;
+			}
+
+			return tablicaWatkow;
 		}
 
 
