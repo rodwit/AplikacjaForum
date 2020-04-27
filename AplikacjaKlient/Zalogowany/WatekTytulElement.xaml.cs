@@ -19,7 +19,7 @@ namespace AplikacjaKlient.Zalogowany
 	/// </summary>
 	public partial class WatekTytulElement : UserControl
 	{
-		private uint _id;
+		private int _id;
 
 		string _tytulProperty;
 		string _autorProperty;
@@ -42,5 +42,6 @@ namespace AplikacjaKlient.Zalogowany
 
 		public string TytulProperty { get => _tytulProperty; set => _tytulProperty = value; }
 		public string AutorProperty { get => _autorProperty; set => _autorProperty = value; }
+		public int Id { get => _id; }
 	}
 }

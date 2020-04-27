@@ -25,6 +25,8 @@ namespace AplikacjaKlient
 			return _instancja;
 		}
 
+		public string Login { get => _login; }
+
 
 		private Klient()
 		{
@@ -50,7 +52,6 @@ namespace AplikacjaKlient
 			_licznikThread.Start();
 		}
 
-		public string Login { get => _login; }
 
 		public void Stop()
 		{
@@ -135,7 +136,7 @@ namespace AplikacjaKlient
 			return false;
 		}
 
-		public Watek[] Tematy()
+		public Watek[] ListaWatkow()
 		{
 			_tcpAdapter.WyslijKomende(Komendy.LISTA);
 
@@ -156,6 +157,38 @@ namespace AplikacjaKlient
 			return tablicaWatkow;
 		}
 
+		public int NowyWatek(string temat)
+		{
+			_tcpAdapter.WyslijKomende(Komendy.NOWY_WATEK);
+			_tcpAdapter.WyslijDane(UTF8Encoding.UTF8.GetBytes(temat));
+			_tcpAdapter.OdbierzKomende();
 
+			return 1;
+			
+		}
+
+		public Watek PobierzWatek(int index)
+		{
+			_tcpAdapter.WyslijKomende(Komendy.WYSLIJ_WATEK);
+
+			_tcpAdapter.WyslijDane(BitConverter.GetBytes(index));
+
+			Watek watek = _tcpAdapter.ToWatek(_tcpAdapter.OdbierzDane());
+
+			return watek;
+		}
+
+		public int WyslijPost(string tresc)
+		{
+			_tcpAdapter.WyslijKomende(Komendy.ZAPISZ_POST);
+
+			PostText post = new PostText(tresc,_login,DateTime.Now);
+
+			_tcpAdapter.WyslijDane(post);
+
+			_tcpAdapter.OdbierzKomende();
+
+			return 1;
+		}
 	}
 }

@@ -8,7 +8,7 @@
              d:DesignHeight="450" d:DesignWidth="800">
 	<Grid>
 		<Grid.RowDefinitions>
-			<RowDefinition Height="10*"/>
+			<RowDefinition Height="15*"/>
 			<RowDefinition Height="90*"/>
 		</Grid.RowDefinitions>
 		<Grid Grid.Row="0">
@@ -21,15 +21,18 @@
 					<ColumnDefinition Width="50*"/>
 					<ColumnDefinition Width="50*"/>
 				</Grid.ColumnDefinitions>
-				<Label Grid.Column="0" Content="Zalogowany jako :" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-				<Label Grid.Column="1" x:Name="LabelUzytkownik" Content="nic" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+				<Label Grid.Column="0" Content="Zalogowany jako :" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20"/>
+				<Label Grid.Column="1" x:Name="LabelUzytkownik" Content="nic" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="20"/>
 			</Grid>
 			
-			<Button Grid.Column="1" x:Name="ButtonWyloguj" Content="Wyloguj" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,5,5"/>
+			<Button Grid.Column="1" x:Name="ButtonWyloguj" Content="Wyloguj" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,5,5" FontSize="20"/>
+			<Button Grid.Column="1" x:Name="ButtonUsunWatek" Content="Usuń" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="65,0,0,5" FontSize="20"/>
+			<Button Grid.Column="1" x:Name="ButtonNowyWatek" Content="Nowy" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="5,0,0,5" Click="ButtonNowyWatek_Click" FontSize="20"/>
+			<Button Grid.Column="1" x:Name="ButtonOdswiez" Content="Odśwież" HorizontalAlignment="Left" Margin="120,0,0,5" VerticalAlignment="Bottom" FontSize="20" Click="ButtonOdswiez_Click"/>
 
 		</Grid>
 
-		<ContentControl x:Name="contentControl" Grid.Row="1" Content="{Binding}" />
+		<ContentControl x:Name="contentControl" Grid.Row="1" Content="{Binding}" HorizontalAlignment="Stretch" />
 
 
 

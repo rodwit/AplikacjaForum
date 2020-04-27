@@ -47,7 +47,7 @@ namespace AplikacjaKlient
 					_aktualnyWidok = new Logowanie(this);
 					break;
 				case WIDOK.ZALOGOWANY:
-					_aktualnyWidok = new Zalogowany.Glowny();
+					_aktualnyWidok = new Zalogowany.Glowny(this);
 					break;
 				case WIDOK.REJESTRACJA:
 					_aktualnyWidok = new Rejestracja(this);

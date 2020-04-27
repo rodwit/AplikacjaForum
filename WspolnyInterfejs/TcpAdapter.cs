@@ -35,6 +35,15 @@ namespace WspolnyInterfejs
 			return wynik;
 		}
 
+		public Post ToPost(byte[] dane)
+		{
+			BinaryFormatter binaryFormatter = new BinaryFormatter();
+			System.IO.MemoryStream memoryStream = new System.IO.MemoryStream(dane);
+			Post wynik = (Post)binaryFormatter.Deserialize(memoryStream);
+
+			return wynik;
+		}
+
 		public void WyslijDane(byte[] dane)
 		{
 			Console.WriteLine("Send data");
@@ -42,7 +51,7 @@ namespace WspolnyInterfejs
 			_networkStream.Write(dane, 0, dane.Length);
 		}
 
-		public void WyslijDane(Watek dane)
+		public void WyslijDane(object dane)
 		{
 			if (dane == null)
 				throw new Exception("WyslijDane puste dane");

@@ -9,15 +9,15 @@ using System.Xml.Linq;
 
 namespace AplikacjaSerwer
 {
-	class Polaczenie
+	class Polaczenie : IObserwator
 	{
 		bool _zalogowany = false;
+		string _login = null;
+		int _aktywnyWatek = -1;
 		TcpClient _klient = null;
 		TcpAdapter _tcpAdapter = null;
 
 		bool aktywny = true;
-
-		private static List<Watek> _watki; // lista tematów rozmów
 
 		Thread _licznikThread = null;
 		Licznik _licznik = null;
@@ -27,17 +27,19 @@ namespace AplikacjaSerwer
 			_klient = klient;
 			_tcpAdapter = new TcpAdapter(_klient);
 
-			if (_watki == null)
-			{
-				_watki = new List<Watek>();
 
-				//testowy 
-				Watek testowy = new Watek(1, "Testowy", "Test");
-				Watek testowy2 = new Watek(2, "Testowy2", "Test2");
-				_watki.Add(testowy);
-				_watki.Add(testowy2);
-			}
 
+			//testowe wątki
+
+			ZarzadcaWatkami.Instancja().DodajWatek("Testowy", "Test");
+			ZarzadcaWatkami.Instancja().DodajWatek("Testowy2", "Test2");
+
+
+		}
+
+		public void Aktualizuj()
+		{
+			_
 		}
 
 
@@ -71,8 +73,14 @@ namespace AplikacjaSerwer
 					case WspolnyInterfejs.Komendy.LISTA:
 						lista();
 						break;
-					case WspolnyInterfejs.Komendy.TEMAT:
-						Console.WriteLine("Temat");
+					case Komendy.NOWY_WATEK:
+						nowyWatek();
+						break;
+					case WspolnyInterfejs.Komendy.WYSLIJ_WATEK:
+						wyslijWatek();
+						break;
+					case Komendy.ZAPISZ_POST:
+						zapiszPost();
 						break;
 					case Komendy.UTRZYMAJ:
 						Console.WriteLine("Utrzymaj");
@@ -87,6 +95,7 @@ namespace AplikacjaSerwer
 			Console.WriteLine("Zakończono połączenie");
 
 			_klient.Close();
+			ZarzadcaWatkami.Instancja().UsunObserwatora(this);
 		}
 
 		private sealed class Licznik
@@ -140,16 +149,6 @@ namespace AplikacjaSerwer
 			}
 		}
 
-		/// <summary>
-		/// Zwraca wątek po id. Jak nie to null
-		/// </summary>
-		private Watek zwrocWatek(uint id) 
-		{
-			foreach (var ele in _watki)
-				if (ele.ZwrocID == id)
-					return ele;
-			return null;
-		}
 
 		private void rejestracja()
 		{
@@ -189,7 +188,7 @@ namespace AplikacjaSerwer
 
 			if (temp != null)
 				if (temp.Value == haslo)
-				{ _zalogowany = true; }
+				{ _zalogowany = true; _login = login; }
 
 			if (_zalogowany)
 				_tcpAdapter.WyslijKomende(Komendy.POTWIERDZENIE);
@@ -203,16 +202,53 @@ namespace AplikacjaSerwer
 				return;
 
 
-			if (_watki.Count == 0)
+			if (ZarzadcaWatkami.Instancja().Count == 0)
 			{
 				_tcpAdapter.WyslijKomende(Komendy.NIE_POTWIERDZENIE); // jak nie ma wątków
 				return;
 			}
 			_tcpAdapter.WyslijKomende(Komendy.POTWIERDZENIE);
-			_tcpAdapter.WyslijDane(BitConverter.GetBytes(_watki.Count)); // wyślij liczbę wątków
-			foreach (var ele in _watki)
+			_tcpAdapter.WyslijDane(BitConverter.GetBytes(ZarzadcaWatkami.Instancja().Count)); // wyślij liczbę wątków
+			foreach (var ele in ZarzadcaWatkami.Instancja().ToArray())
 				_tcpAdapter.WyslijDane(ele.ZwrocMniejszy()); // wyślij tematy
 
+		}
+
+		void nowyWatek()
+		{
+			if (_zalogowany == false) //wartownik
+				return;
+
+			string temat = Encoding.UTF8.GetString(_tcpAdapter.OdbierzDane());
+			ZarzadcaWatkami.Instancja().DodajWatek(temat, _login);
+			_tcpAdapter.WyslijKomende(Komendy.POTWIERDZENIE);
+		}
+
+		void wyslijWatek()
+		{
+			if (_zalogowany == false) //wartownik
+				return;
+
+
+			int index = BitConverter.ToInt32(_tcpAdapter.OdbierzDane());
+
+			_aktywnyWatek = index;
+
+			Watek watek = ZarzadcaWatkami.Instancja().ZwrocWatek(index);
+
+			_tcpAdapter.WyslijDane(watek);
+
+
+		}
+
+		void zapiszPost()
+		{
+			if (_zalogowany == false) //wartownik
+				return;
+
+			Post post = _tcpAdapter.ToPost(_tcpAdapter.OdbierzDane());
+			ZarzadcaWatkami.Instancja().ZwrocWatek(_aktywnyWatek).DodajPost(post);
+			_tcpAdapter.WyslijKomende(Komendy.POTWIERDZENIE);
 		}
 	}
 }

@@ -19,10 +19,17 @@ namespace AplikacjaKlient.Zalogowany
 	/// </summary>
 	public partial class Lista : UserControl
 	{
-		public Lista()
+		Zalogowany.Glowny _rodzic;
+		public Lista(Zalogowany.Glowny rodzic)
 		{
 			InitializeComponent();
-			Watek[] listaWatkow =  Klient.Instancja().Tematy();
+			_rodzic = rodzic;
+			AktualizujListe();
+		}
+
+		public void AktualizujListe()
+		{
+			Watek[] listaWatkow = Klient.Instancja().ListaWatkow();
 			List<WatekTytulElement> watekTytuls = new List<WatekTytulElement>();
 
 			foreach (var ele in listaWatkow)
@@ -30,8 +37,15 @@ namespace AplikacjaKlient.Zalogowany
 				WatekTytulElement watekTytulElement = new WatekTytulElement(ele);
 				watekTytuls.Add(watekTytulElement);
 			}
-			
+
 			lista.ItemsSource = watekTytuls;
+		}
+
+		private void lista_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+		{
+			WatekTytulElement element = ((WatekTytulElement)lista.SelectedItem);
+			_rodzic.PrzelaczWidok(Glowny.Widok.ROZMOWA,element.Id);
+			//MessageBox.Show(element.Id.ToString());
 		}
 	}
 }
