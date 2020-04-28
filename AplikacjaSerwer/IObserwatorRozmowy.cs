@@ -4,8 +4,8 @@ using System.Text;
 
 namespace WspolnyInterfejs
 {
-	interface IObserwator
+	interface IObserwatorRozmowy
 	{
-		void Aktualizuj();
+		void AktualizujRozmowe();
 	}
 }

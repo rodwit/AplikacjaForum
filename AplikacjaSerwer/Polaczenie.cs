@@ -9,7 +9,7 @@ using System.Xml.Linq;
 
 namespace AplikacjaSerwer
 {
-	class Polaczenie : IObserwator
+	class Polaczenie : IObserwatorRozmowy
 	{
 		bool _zalogowany = false;
 		string _login = null;
@@ -37,9 +37,9 @@ namespace AplikacjaSerwer
 
 		}
 
-		public void Aktualizuj()
+		public void AktualizujRozmowe()
 		{
-			_
+			_tcpAdapter.WyslijDane(ZarzadcaWatkami.Instancja().ZwrocWatek(_aktywnyWatek));
 		}
 
 
@@ -81,6 +81,9 @@ namespace AplikacjaSerwer
 						break;
 					case Komendy.ZAPISZ_POST:
 						zapiszPost();
+						break;
+					case Komendy.OBSERWUJ_WATEK:
+						obserwujWatek();
 						break;
 					case Komendy.UTRZYMAJ:
 						Console.WriteLine("Utrzymaj");
@@ -238,7 +241,6 @@ namespace AplikacjaSerwer
 
 			_tcpAdapter.WyslijDane(watek);
 
-
 		}
 
 		void zapiszPost()
@@ -249,6 +251,14 @@ namespace AplikacjaSerwer
 			Post post = _tcpAdapter.ToPost(_tcpAdapter.OdbierzDane());
 			ZarzadcaWatkami.Instancja().ZwrocWatek(_aktywnyWatek).DodajPost(post);
 			_tcpAdapter.WyslijKomende(Komendy.POTWIERDZENIE);
+		}
+
+		void obserwujWatek()
+		{
+			if (_tcpAdapter.OdbierzKomende() == Komendy.POTWIERDZENIE)
+				ZarzadcaWatkami.Instancja().DodajObserwatora(this, _aktywnyWatek);
+			else
+				ZarzadcaWatkami.Instancja().UsunObserwatora(this);
 		}
 	}
 }

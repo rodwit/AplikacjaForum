@@ -190,5 +190,22 @@ namespace AplikacjaKlient
 
 			return 1;
 		}
+
+#nullable enable
+		/// <summary>
+		/// Nasłuchuje na pojawienie się nowego postu. Jak w danym momencie nic nie ma to zwraca null
+		/// </summary>
+		/// <returns></returns>
+		public Post? ZwrocPost()
+		{
+			if (_tcpAdapter.DaneDostepne())
+			{
+				Post post = _tcpAdapter.ToPost(_tcpAdapter.OdbierzDane());
+				return post;
+			}
+			else
+				return null;
+		}
+
 	}
 }

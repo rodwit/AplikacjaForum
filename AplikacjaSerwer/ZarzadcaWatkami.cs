@@ -5,12 +5,12 @@ using WspolnyInterfejs;
 
 namespace AplikacjaSerwer
 {
-	class ZarzadcaWatkami : INadzorcaObserwatorow
+	class ZarzadcaWatkami : INadzorcaObserwatorowRozmow
 	{
 		private static ZarzadcaWatkami _instancja;
 		private List<Watek> _lista;
 		private Stack<int> _wolne;
-		private Dictionary<IObserwator, int> _listaObserwatorowRozmow;
+		private Dictionary<IObserwatorRozmowy, int> _listaObserwatorowRozmow;
 
 
 		public static ZarzadcaWatkami Instancja()
@@ -23,7 +23,7 @@ namespace AplikacjaSerwer
 
 		private ZarzadcaWatkami()
 		{
-			_listaObserwatorowRozmow = new Dictionary<IObserwator, int>();
+			_listaObserwatorowRozmow = new Dictionary<IObserwatorRozmowy, int>();
 			_lista = new List<Watek>();
 			_wolne = new Stack<int>();
 		}
@@ -54,12 +54,13 @@ namespace AplikacjaSerwer
 
 		public Watek[] ToArray() => _lista.ToArray();
 
-		public void DodajObserwatora(IObserwator obserwator, int index)
+
+		public void DodajObserwatora(IObserwatorRozmowy obserwator, int index)
 		{
 			_listaObserwatorowRozmow.Add(obserwator, index);
 		}
 
-		public void UsunObserwatora(IObserwator obserwator)
+		public void UsunObserwatora(IObserwatorRozmowy obserwator)
 		{
 			_listaObserwatorowRozmow.Remove(obserwator);
 		}
@@ -67,7 +68,7 @@ namespace AplikacjaSerwer
 		public void Powiadom()
 		{
 			foreach (var ele in _listaObserwatorowRozmow)
-				ele.Key.Aktualizuj();
+				ele.Key.AktualizujRozmowe();
 		}
 	}
 }

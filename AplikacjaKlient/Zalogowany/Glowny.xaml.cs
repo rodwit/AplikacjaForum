@@ -34,7 +34,10 @@ namespace AplikacjaKlient.Zalogowany
 		public void PrzelaczWidok(Widok widok, int index = -1)
 		{
 			if (widok == Widok.LISTA)
+			{
 				contentControl.Content = _lista;
+				_lista.AktualizujListe();
+			}
 			else
 				contentControl.Content = new Rozmowa.Glowny(this, index);
 		}

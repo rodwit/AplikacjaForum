@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -21,12 +22,16 @@ namespace AplikacjaKlient.Zalogowany.Rozmowa
 	{
 		private Zalogowany.Glowny _rodzic;
 		private int _index;
+		private Thread _nasluchPost = null;
+
 		public Glowny(Zalogowany.Glowny rodzic, int index)
 		{
 			InitializeComponent();
 			_rodzic = rodzic;
 			_index = index;
 			aktualizuj();
+			_nasluchPost = new Thread(nasluchujPost);
+			_nasluchPost.Start();
 		}
 
 		private void aktualizuj()
@@ -34,6 +39,19 @@ namespace AplikacjaKlient.Zalogowany.Rozmowa
 			Watek watek = Klient.Instancja().PobierzWatek(_index);
 			LabelTemat.Content = watek.ZwrocNazwe;
 			listaRozmowa.ItemsSource = watek.ZwrocRozmowe();
+		}
+
+		private void nasluchujPost()
+		{
+			try
+			{
+				while (true)
+					Klient.Instancja().ZwrocPost();
+			}
+			catch(Exception e)
+			{
+				System.Diagnostics.Debug.WriteLine(e.Message);
+			}
 		}
 
 		private void ButtonWyslij_Click(object sender, RoutedEventArgs e)
@@ -46,6 +64,7 @@ namespace AplikacjaKlient.Zalogowany.Rozmowa
 		private void ButtonWstecz_Click(object sender, RoutedEventArgs e)
 		{
 			_rodzic.PrzelaczWidok(Zalogowany.Glowny.Widok.LISTA);
+			_nasluchPost.Abort();
 		}
 	}
 }
