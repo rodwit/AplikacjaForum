@@ -5,6 +5,7 @@ using System.Net.Sockets;
 using System.Xml.Linq;
 using System.Threading;
 using WspolnyInterfejs;
+using System.Diagnostics;
 
 namespace AplikacjaKlient
 {
@@ -12,7 +13,6 @@ namespace AplikacjaKlient
 	{
 		private static Klient _instancja = null;
 		private string _login = null;
-		TcpClient _klient = null;
 		TcpAdapter _tcpAdapter = null;
 
 		Thread _licznikThread = null;
@@ -37,14 +37,13 @@ namespace AplikacjaKlient
 			
 			try
 			{
-				_klient = new TcpClient(adres, port);
+				_tcpAdapter = new TcpAdapter(adres, port);
 			}
 			catch(Exception e)
 			{
 				System.Diagnostics.Debug.WriteLine(e.Message);
 				Environment.Exit(-100);
 			}
-			_tcpAdapter = new TcpAdapter(_klient);
 
 			_licznik = new Licznik(this);
 
@@ -56,13 +55,13 @@ namespace AplikacjaKlient
 		public void Stop()
 		{
 			_licznik.Wylacz();
-			_klient.Close();
+			_tcpAdapter.Close();
 			_login = null;
 		}
 
 		~Klient()
 		{
-			_klient.Close();
+			_tcpAdapter.Close();
 			_licznik.Wylacz();
 		}
 
@@ -173,7 +172,9 @@ namespace AplikacjaKlient
 
 			_tcpAdapter.WyslijDane(BitConverter.GetBytes(index));
 
-			Watek watek = _tcpAdapter.ToWatek(_tcpAdapter.OdbierzDane());
+			byte[] watedByte = _tcpAdapter.OdbierzDane();
+
+			Watek watek = _tcpAdapter.ToWatek(watedByte);
 
 			return watek;
 		}
@@ -191,20 +192,30 @@ namespace AplikacjaKlient
 			return 1;
 		}
 
-#nullable enable
 		/// <summary>
-		/// Nasłuchuje na pojawienie się nowego postu. Jak w danym momencie nic nie ma to zwraca null
+		/// Nasłuchuje na pojawienie się nowego postu.
 		/// </summary>
 		/// <returns></returns>
-		public Post? ZwrocPost()
+		public bool CzyPost()
 		{
 			if (_tcpAdapter.DaneDostepne())
 			{
-				Post post = _tcpAdapter.ToPost(_tcpAdapter.OdbierzDane());
-				return post;
+				if (_tcpAdapter.OdbierzKomende() == Komendy.WATEK_ZMIENIONY)
+					return true;
 			}
 			else
-				return null;
+				return false;
+
+			return false;
+		}
+
+		public void ZglosObserwacjeWatku(bool zglos)
+		{
+			_tcpAdapter.WyslijKomende(Komendy.OBSERWUJ_WATEK);
+			if (zglos)
+				_tcpAdapter.WyslijKomende(Komendy.POTWIERDZENIE);
+			else
+				_tcpAdapter.WyslijKomende(Komendy.NIE_POTWIERDZENIE);
 		}
 
 	}

@@ -3,16 +3,54 @@ using System.Collections.Generic;
 using System.Text;
 using System.Net.Sockets;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Net;
 
 namespace WspolnyInterfejs
 {
 	public class TcpAdapter
 	{
+		TcpClient _tcpClient;
 		NetworkStream _networkStream;
+
+		public TcpAdapter(string adres, int port)
+		{
+
+			_tcpClient = new TcpClient(adres, port);
+			_networkStream = _tcpClient.GetStream();
+		}
 
 		public TcpAdapter(TcpClient tcpClient)
 		{
-			_networkStream = tcpClient.GetStream();
+			_tcpClient = tcpClient;
+			_networkStream = _tcpClient.GetStream();
+		}
+
+		~TcpAdapter()
+		{
+			_networkStream.Close();
+			_tcpClient.Close();
+		}
+
+		public string Adres
+		{
+			get
+			{
+				return ((IPEndPoint)_tcpClient.Client.RemoteEndPoint).Address.ToString();
+			}
+		}
+
+		public int Port
+		{
+			get
+			{
+				return ((IPEndPoint)_tcpClient.Client.RemoteEndPoint).Port;
+			}
+		}
+
+		public void Close()
+		{
+			_networkStream.Close();
+			_tcpClient.Close();
 		}
 
 		public byte[] OdbierzDane()

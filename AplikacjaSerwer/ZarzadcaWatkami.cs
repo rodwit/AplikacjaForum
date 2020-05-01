@@ -26,6 +26,11 @@ namespace AplikacjaSerwer
 			_listaObserwatorowRozmow = new Dictionary<IObserwatorRozmowy, int>();
 			_lista = new List<Watek>();
 			_wolne = new Stack<int>();
+
+
+			//test
+			DodajWatek("Testowy", "Test");
+			DodajWatek("Testowy2", "Test2");
 		}
 
 		public void DodajWatek(string temat, string autor)
@@ -45,6 +50,12 @@ namespace AplikacjaSerwer
 				_lista.Add(watek);
 				return;
 			}
+		}
+
+		public void DodajPost(int watekId, Post post)
+		{
+			_lista[watekId].DodajPost(post);
+			Powiadom();
 		}
 
 		public Watek ZwrocWatek(int index) { return _lista[index]; }

@@ -5,7 +5,7 @@ using System.Text;
 using WspolnyInterfejs;
 using System.Threading;
 using System.Xml.Linq;
-
+using System.Net;
 
 namespace AplikacjaSerwer
 {
@@ -14,8 +14,8 @@ namespace AplikacjaSerwer
 		bool _zalogowany = false;
 		string _login = null;
 		int _aktywnyWatek = -1;
-		TcpClient _klient = null;
 		TcpAdapter _tcpAdapter = null;
+		TcpAdapter _tcpAdapterTlo = null;
 
 		bool aktywny = true;
 
@@ -24,22 +24,20 @@ namespace AplikacjaSerwer
 
 		public Polaczenie(TcpClient klient)
 		{
-			_klient = klient;
-			_tcpAdapter = new TcpAdapter(_klient);
+			_tcpAdapter = new TcpAdapter(klient);
 
+			//TcpClient tlo = new TcpClient(_tcpAdapter.Adres,_tcpAdapter.Port);
+			//_tcpAdapterTlo = new TcpAdapter(tlo);
 
-
-			//testowe wątki
-
-			ZarzadcaWatkami.Instancja().DodajWatek("Testowy", "Test");
-			ZarzadcaWatkami.Instancja().DodajWatek("Testowy2", "Test2");
-
-
+			Console.WriteLine("Podlaczono:");
+			Console.WriteLine("Adress: ", _tcpAdapter.Adres);
+			Console.WriteLine("Port: ", _tcpAdapter.Port);
 		}
 
 		public void AktualizujRozmowe()
 		{
-			_tcpAdapter.WyslijDane(ZarzadcaWatkami.Instancja().ZwrocWatek(_aktywnyWatek));
+			_tcpAdapter.WyslijKomende(Komendy.WATEK_ZMIENIONY);
+			//_tcpAdapter.WyslijDane(ZarzadcaWatkami.Instancja().ZwrocWatek(_aktywnyWatek));
 		}
 
 
@@ -97,7 +95,7 @@ namespace AplikacjaSerwer
 			}
 			Console.WriteLine("Zakończono połączenie");
 
-			_klient.Close();
+			_tcpAdapter.Close();
 			ZarzadcaWatkami.Instancja().UsunObserwatora(this);
 		}
 
@@ -249,7 +247,7 @@ namespace AplikacjaSerwer
 				return;
 
 			Post post = _tcpAdapter.ToPost(_tcpAdapter.OdbierzDane());
-			ZarzadcaWatkami.Instancja().ZwrocWatek(_aktywnyWatek).DodajPost(post);
+			ZarzadcaWatkami.Instancja().DodajPost(_aktywnyWatek, post);
 			_tcpAdapter.WyslijKomende(Komendy.POTWIERDZENIE);
 		}
 

@@ -22,7 +22,10 @@ namespace AplikacjaKlient.Zalogowany.Rozmowa
 	{
 		private Zalogowany.Glowny _rodzic;
 		private int _index;
+		
 		private Thread _nasluchPost = null;
+		private bool _nasluchuj = true;
+		private bool _nasluchujPauza = false;
 
 		public Glowny(Zalogowany.Glowny rodzic, int index)
 		{
@@ -43,28 +46,31 @@ namespace AplikacjaKlient.Zalogowany.Rozmowa
 
 		private void nasluchujPost()
 		{
-			try
+			Klient.Instancja().ZglosObserwacjeWatku(true);
+
+			while (_nasluchuj)
 			{
-				while (true)
-					Klient.Instancja().ZwrocPost();
-			}
-			catch(Exception e)
-			{
-				System.Diagnostics.Debug.WriteLine(e.Message);
+				if (_nasluchujPauza)
+					continue;
+				if (Klient.Instancja().CzyPost())
+					aktualizuj();
 			}
 		}
 
 		private void ButtonWyslij_Click(object sender, RoutedEventArgs e)
 		{
+			_nasluchujPauza = true;
 			Klient.Instancja().WyslijPost(TextBoxPost.Text);
 			TextBoxPost.Text = "";
 			aktualizuj();
+			_nasluchujPauza = false;
 		}
 
 		private void ButtonWstecz_Click(object sender, RoutedEventArgs e)
 		{
+			_nasluchuj = false;
+			Klient.Instancja().ZglosObserwacjeWatku(false);
 			_rodzic.PrzelaczWidok(Zalogowany.Glowny.Widok.LISTA);
-			_nasluchPost.Abort();
 		}
 	}
 }
