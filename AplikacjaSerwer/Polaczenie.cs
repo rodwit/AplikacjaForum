@@ -30,13 +30,20 @@ namespace AplikacjaSerwer
 			//_tcpAdapterTlo = new TcpAdapter(tlo);
 
 			Console.WriteLine("Podlaczono:");
-			Console.WriteLine("Adress: ", _tcpAdapter.Adres);
-			Console.WriteLine("Port: ", _tcpAdapter.Port);
+			Console.WriteLine("Adress: "+ _tcpAdapter.Adres);
+			Console.WriteLine("Port: " + _tcpAdapter.Port);
+
+			XDocument konfiguracja = XDocument.Load("./konfiguracja.xml");
+			int port = Int32.Parse(konfiguracja.Root.Element("PortTlo").Value);
+
+			Thread.Sleep(500);
+
+			_tcpAdapterTlo = new TcpAdapter(_tcpAdapter.Adres, port);
 		}
 
 		public void AktualizujRozmowe()
 		{
-			_tcpAdapter.WyslijKomende(Komendy.WATEK_ZMIENIONY);
+			_tcpAdapterTlo.WyslijKomende(Komendy.WATEK_ZMIENIONY);
 			//_tcpAdapter.WyslijDane(ZarzadcaWatkami.Instancja().ZwrocWatek(_aktywnyWatek));
 		}
 

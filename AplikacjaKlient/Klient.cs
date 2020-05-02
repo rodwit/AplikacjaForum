@@ -6,6 +6,9 @@ using System.Xml.Linq;
 using System.Threading;
 using WspolnyInterfejs;
 using System.Diagnostics;
+using System.Net;
+using System.Linq;
+using System.Net.NetworkInformation;
 
 namespace AplikacjaKlient
 {
@@ -14,6 +17,7 @@ namespace AplikacjaKlient
 		private static Klient _instancja = null;
 		private string _login = null;
 		TcpAdapter _tcpAdapter = null;
+		TcpAdapter _tcpAdapterTlo = null;
 
 		Thread _licznikThread = null;
 		Licznik _licznik;
@@ -33,11 +37,23 @@ namespace AplikacjaKlient
 			XDocument konfiguracja = XDocument.Load("./konfiguracja.xml");
 			string adres = konfiguracja.Root.Element("Adres").Value;
 			int port = Int32.Parse(konfiguracja.Root.Element("Port").Value);
+			int portTlo = Int32.Parse(konfiguracja.Root.Element("PortTlo").Value);
 
-			
+
 			try
 			{
+
 				_tcpAdapter = new TcpAdapter(adres, port);
+
+				//TcpListener tcpListener = new TcpListener(adresLokalny,portTlo);
+				TcpListener tcpListener = new TcpListener(IPAddress.Any, portTlo);
+				tcpListener.Start();
+				_tcpAdapterTlo = new TcpAdapter(tcpListener.AcceptTcpClient());
+				tcpListener.Stop();
+
+				Debug.WriteLine("Tlo:");
+				Debug.WriteLine("Adres: " + _tcpAdapterTlo.Adres);
+				Debug.WriteLine("Port: " + _tcpAdapterTlo.Port);
 			}
 			catch(Exception e)
 			{
@@ -198,9 +214,9 @@ namespace AplikacjaKlient
 		/// <returns></returns>
 		public bool CzyPost()
 		{
-			if (_tcpAdapter.DaneDostepne())
+			if (_tcpAdapterTlo.DaneDostepne())
 			{
-				if (_tcpAdapter.OdbierzKomende() == Komendy.WATEK_ZMIENIONY)
+				if (_tcpAdapterTlo.OdbierzKomende() == Komendy.WATEK_ZMIENIONY)
 					return true;
 			}
 			else

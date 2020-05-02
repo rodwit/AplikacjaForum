@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using System.Threading;
 using System.Windows;
@@ -25,7 +26,6 @@ namespace AplikacjaKlient.Zalogowany.Rozmowa
 		
 		private Thread _nasluchPost = null;
 		private bool _nasluchuj = true;
-		private bool _nasluchujPauza = false;
 
 		public Glowny(Zalogowany.Glowny rodzic, int index)
 		{
@@ -34,7 +34,15 @@ namespace AplikacjaKlient.Zalogowany.Rozmowa
 			_index = index;
 			aktualizuj();
 			_nasluchPost = new Thread(nasluchujPost);
+			_nasluchPost.IsBackground = true;
 			_nasluchPost.Start();
+		}
+
+		~Glowny()
+		{
+			_nasluchuj = false;
+			_nasluchPost.Abort();
+			Debug.WriteLine("destruktor");
 		}
 
 		private void aktualizuj()
@@ -50,20 +58,22 @@ namespace AplikacjaKlient.Zalogowany.Rozmowa
 
 			while (_nasluchuj)
 			{
-				if (_nasluchujPauza)
-					continue;
 				if (Klient.Instancja().CzyPost())
-					aktualizuj();
+				{
+					this.Dispatcher.Invoke(() =>
+				   {
+					   aktualizuj();
+				   });
+					//aktualizuj();
+				}
 			}
 		}
 
 		private void ButtonWyslij_Click(object sender, RoutedEventArgs e)
 		{
-			_nasluchujPauza = true;
 			Klient.Instancja().WyslijPost(TextBoxPost.Text);
 			TextBoxPost.Text = "";
-			aktualizuj();
-			_nasluchujPauza = false;
+			//aktualizuj();
 		}
 
 		private void ButtonWstecz_Click(object sender, RoutedEventArgs e)
